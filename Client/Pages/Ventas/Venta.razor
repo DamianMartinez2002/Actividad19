@@ -1,0 +1,69 @@
+﻿@page "/Venta"
+@inject NavigationManager navegator
+@inject HttpClient http
+@using Actividad18.Shared.Modelos
+
+<h3>Ventas</h3>
+
+<button class="btn btn-primary" @onclick=Agregar><span class="oi oi-plus">Agregar Venta</span></button>
+
+@if (lista == null)
+{
+    <h4>Cargando ...</h4>
+}
+else if (lista.Count == 0)
+{
+    <h4>No hay Ventas</h4>
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Id del Cliente</th>
+                <th>Total</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in lista)
+            {
+                <tr>
+                    <td>@i.Id</td>
+                    <td>@i.ClientesId</td>
+                    <td>@i.Total</td>
+                    <td>@i.Fecha</td>
+                    <td><button class="btn btn-primary" @onclick="(()=>Editar(Convert.ToInt32(i.Id)))">Cambiar</button></td>
+                    <td><button class="btn btn-primary" @onclick="(()=>Eliminar(i))">Eliminar</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<Ventas> lista = new List<Ventas>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        lista = await http.GetFromJsonAsync<List<Ventas>>("api/Ventas");
+    }
+
+    public void Agregar()
+    {
+        navegator.NavigateTo("/Ventas/A");
+    }
+
+    private void Editar(int id)
+    {
+        navegator.NavigateTo($"/Ventas/E/{id}");
+    }
+    public async Task Eliminar(Ventas ven)
+    {
+        await http.DeleteAsync($"api/Ventas/{ven.Id}");
+        lista.Remove(ven);
+    }
+}

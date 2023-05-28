@@ -1,0 +1,42 @@
+﻿@page "/Clientes/E/{id:int}";
+@using Actividad18.Shared.Modelos;
+@inject HttpClient http
+@inject NavigationManager navegator
+
+<h3>Cambios de Cliente</h3>
+
+<EditForm Model="cliente" OnValidSubmit="Editars">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label for="txtNombre" class="form-label">Nombre</label>
+        <InputText id="txtNombre" class="form-control" @bind-Value="cliente.Nombre" />
+    </div>
+    <div class="mb-3">
+        <label for="txtDireccion" class="form-label">Direccion</label>
+        <InputText id="txtDireccion" class="form-control" @bind-Value="cliente.Direccion" />
+    </div>
+    <div class="mb-3">
+        <label for="txtTelefono" class="form-label">Telefono</label>
+        <InputText id="txtTelefono" class="form-control" @bind-Value="cliente.NumTelefono" />
+    </div>
+    <button type="submit" class="btn btn-primary">Añadir</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private Clientes cliente = new Clientes();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await http.GetFromJsonAsync<Clientes>($"api/Clientes/{id}");
+    }
+
+    private async void Editars()
+    {
+        await http.PutAsJsonAsync($"api/Clientes/{id}", cliente);
+        navegator.NavigateTo("/Clientes");
+    }
+}
+

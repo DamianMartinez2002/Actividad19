@@ -1,0 +1,46 @@
+﻿@page "/Productos/E/{id:int}";
+@using Actividad18.Shared.Modelos;
+@inject HttpClient http
+@inject NavigationManager navegator
+
+<h3>Cambios de Productos</h3>
+
+<EditForm Model="pro" OnValidSubmit="Editars">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label for="txtNombre" class="form-label">Nombre</label>
+        <InputText id="txtNombre" class="form-control" @bind-Value="pro.nombre" />
+    </div>
+    <div class="mb-3">
+        <label for="txtCategoria" class="form-label">Direccion</label>
+        <InputText id="txtCategoria" class="form-control" @bind-Value="pro.categoria" />
+    </div>
+    <div class="mb-3">
+        <label for="numPrecio" class="form-label">Precio</label>
+        <InputNumber id="numPrecio" class="form-control" @bind-Value="pro.precio" />
+    </div>
+    <div class="mb-3">
+        <label for="numId" class="form-label">Id De Ventas</label>
+        <InputNumber id="numId" class="form-control" @bind-Value="pro.VentasId" />
+    </div>
+    <button type="submit" class="btn btn-primary">Añadir</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private Productos pro = new Productos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        pro = await http.GetFromJsonAsync<Productos>($"api/Productos/{id}");
+    }
+
+    private async void Editars()
+    {
+        await http.PutAsJsonAsync($"api/Productos/{id}", pro);
+        navegator.NavigateTo("/Producto");
+    }
+}
+

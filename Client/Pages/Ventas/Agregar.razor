@@ -1,0 +1,35 @@
+﻿@page "/Ventas/A"
+@using Actividad18.Shared.Modelos
+@inject NavigationManager navegator
+@inject HttpClient http
+
+
+<h3>Nuevo Venta</h3>
+
+<EditForm Model="ven" OnValidSubmit="Agregars">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label for="numId" class="form-label">Id del Cliente</label>
+        <InputNumber id="numId" class="form-control" @bind-Value="ven.ClientesId" />
+    </div>
+    <div class="mb-3">
+        <label for="numTotal" class="form-label">Id De Ventas</label>
+        <InputNumber id="numTotal" class="form-control" @bind-Value="ven.Total" />
+    </div>
+    <div class="mb-3">
+        <label for="dtFecha" class="form-label">Fecha</label>
+        <InputDate id="dtFecha" class="form-control" @bind-Value="ven.Fecha" />
+    </div>
+    <button type="submit" class="btn btn-primary">Añadir</button>
+</EditForm>
+
+
+@code {
+    private Ventas ven = new Ventas();
+    private async void Agregars()
+    {
+        await http.PostAsJsonAsync("api/Ventas", ven);
+        navegator.NavigateTo("/Venta");
+    }
+}

@@ -1,0 +1,39 @@
+﻿@page "/Productos/A"
+@using Actividad18.Shared.Modelos
+@inject NavigationManager navegator
+@inject HttpClient http
+
+
+<h3>Nuevo Producto</h3>
+
+<EditForm Model="pro" OnValidSubmit="Agregars">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label for="txtNombre" class="form-label">Nombre</label>
+        <InputText id="txtNombre" class="form-control" @bind-Value="pro.nombre" />
+    </div>
+    <div class="mb-3">
+        <label for="txtCategoria" class="form-label">Direccion</label>
+        <InputText id="txtCategoria" class="form-control" @bind-Value="pro.categoria" />
+    </div>
+    <div class="mb-3">
+        <label for="numPrecio" class="form-label">Precio</label>
+        <InputNumber id="numPrecio" class="form-control" @bind-Value="pro.precio" />
+    </div>
+    <div class="mb-3">
+        <label for="numId" class="form-label">Id De Ventas</label>
+        <InputNumber id="numId" class="form-control" @bind-Value="pro.VentasId" />
+    </div>
+    <button type="submit" class="btn btn-primary">Añadir</button>
+</EditForm>
+
+
+@code {
+    private Productos pro = new Productos();
+    private async void Agregars()
+    {
+        await http.PostAsJsonAsync("api/Productos", pro);
+        navegator.NavigateTo("/Producto");
+    }
+}
